@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIMply Creator</title>
+  <meta name="description" content="Generador 3D low-poly de personajes: complexión, rasgos, género y profesión. Exporta a DXF y SVG.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ffb703'/%3E%3Cpath d='M16 6l8 4.5v9L16 24l-8-4.5v-9z' fill='none' stroke='%2314161b' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./js/vendor/three.module.js",
+      "three/addons/": "./js/vendor/addons/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1><span class="logo" aria-hidden="true"></span>SIMply <em>Creator</em></h1>
+      <p class="tag">Generador 3D low-poly de personajes</p>
+    </header>
+
+    <main class="layout">
+      <!-- Vista 3D interactiva -->
+      <section class="stage" aria-label="Vista 3D del personaje">
+        <div id="viewport" class="viewport" role="img" aria-label="Personaje 3D. Arrastra para girar, rueda para acercar."></div>
+        <div class="stage-hud">
+          <button id="btn-spin" class="chip hud" aria-pressed="false" title="Giro automático">⟳ Girar</button>
+          <button id="btn-view" class="chip hud" title="Volver a la vista inicial">⌖ Vista</button>
+        </div>
+        <p class="hint">Arrastra para girar · rueda para acercar</p>
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      </section>
+
+      <!-- Controles -->
+      <aside class="panel" aria-label="Opciones del personaje">
+        <div class="actions">
+          <button id="btn-random" class="btn primary">🎲 Aleatorizar</button>
+          <button id="btn-reset" class="btn">↺ Resetear</button>
+        </div>
+
+        <div id="controls" class="controls"><!-- generado por main.js --></div>
+
+        <section class="group" aria-labelledby="h-colors">
+          <h2 id="h-colors">Colores</h2>
+          <div id="colors" class="colors"></div>
+        </section>
+
+        <section class="group export" aria-labelledby="h-export">
+          <h2 id="h-export">Exportar</h2>
+          <div class="actions">
+            <button id="btn-dxf" class="btn">⬇ DXF <small>CAD · 3DFACE · mm</small></button>
+            <button id="btn-svg" class="btn">⬇ SVG <small>vector · vista actual</small></button>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
