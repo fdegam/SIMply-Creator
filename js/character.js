@@ -27,8 +27,18 @@ function dispose(obj) {
   obj.traverse((o) => { if (o.isMesh) o.geometry.dispose(); }); // los materiales son compartidos
 }
 
+/** Perfil final: complexión + género + sliders de peso (-1..1) y estatura (-1..1). */
 export function targetProfile(state) {
-  return resolveProfile(complexion[state.complexion].profile, gender[state.gender].mods);
+  const p = resolveProfile(complexion[state.complexion].profile, gender[state.gender].mods);
+  const w = state.weight || 0, h = state.stature || 0;
+  p.waist *= 1 + 0.28 * w;
+  p.hip *= 1 + 0.16 * w;
+  p.limb *= 1 + 0.22 * w;
+  p.depth *= 1 + 0.1 * w;
+  p.neck *= 1 + 0.1 * w;
+  p.belly += Math.max(0, w) * 0.7;
+  p.height *= 1 + 0.09 * h;
+  return p;
 }
 
 export class Character {

@@ -18,20 +18,24 @@ python3 -m http.server 8000
 Funciona tal cual en **GitHub Pages** (Settings → Pages → *Deploy from a branch* → `main` / root).
 Three.js está incluido en `js/vendor/`, así que no hay dependencia de CDN.
 
-## Controles
+## Interfaz
 
-| Control | Qué hace |
+Inspirada en los creadores de personajes de simulación de vida (diseño propio, sin recursos de terceros):
+
+| Zona | Qué hace |
 |---|---|
-| Complexión | Delgada · Normal · Atlética · Robusta · Corpulenta |
-| Género | Masculino · Femenino · Neutro (proporciones, cejas, pestañas, busto…) |
-| Rasgos | Peinado (7) · Ojos (4) · Nariz (4) · Rasgo facial (barba, bigote, perilla, gafas, pecas) |
-| Profesión | Casual · Arquitecto · Chef · Médico · Bombero · Artista · Astronauta |
-| Colores | Piel, pelo, ojos, ropa, acento, pantalón (se aplican al instante) |
-| 🎲 Aleatorizar / ↺ Resetear | Combinación y colores al azar / estado inicial |
-| ⬇ DXF / ⬇ SVG | Exportan el personaje actual |
+| Arco de botones redondos (derecha) | Elige categoría: Complexión · Género · Peinado · Ojos · Nariz · Rasgo facial · Profesión |
+| Panel de tarjetas | Cada opción con su miniatura 3D renderizada con tu personaje y tus colores |
+| Hexágonos de color (arriba izq.) | Piel, pelo, ojos, ropa, acento y pantalón (cambio en vivo) |
+| Sliders verticales (izq.) | Peso y estatura continuos (doble clic para centrar) |
+| Flechas curvas | Giran el personaje al mantenerlas pulsadas (también se puede arrastrar y usar la rueda) |
+| Barra inferior | 🎲 aleatorizar · deshacer · rehacer (`Ctrl+Z`) · giro automático |
+| ✕ | Resetear |
+| DXF / SVG (arriba dcha.) | Exportan el personaje; el nombre del archivo sale del nombre que escribas arriba a la izquierda |
 
-Al cambiar la complexión o el género las proporciones se **morfan** de forma animada; el resto de
-piezas entra con un pop elástico. Elegir una profesión aplica sus colores por defecto (luego puedes cambiarlos).
+Opciones: 5 complexiones, 3 géneros, 7 peinados, 4 ojos, 4 narices, 6 rasgos faciales y 7 profesiones
+(Casual, Arquitecto, Chef, Médico, Bombero, Artista, Astronauta; al elegir una se aplican sus colores por defecto).
+Al cambiar complexión o género las proporciones se **morfan** de forma animada; el resto de piezas entra con un pop elástico.
 
 ## Estructura
 
@@ -41,6 +45,7 @@ css/style.css
 js/
   main.js             escena, interfaz y eventos
   character.js        ensambla las piezas según el estado y anima las transiciones
+  thumbs.js           miniaturas de las opciones (renderer fuera de pantalla)
   common.js           helpers low-poly + layout del cuerpo (articulaciones) + prendas base
   materials.js        materiales compartidos, colores y paletas
   complexion.js       categoría: cuerpo base según proporciones
