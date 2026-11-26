@@ -19,6 +19,15 @@ import potrace
 
 PAD = 6
 
+# Piezas con huecos que deben verse transparentes (óvalo de la cara en el pelo,
+# cristales de las gafas, boca en la barba, huecos de sillas y andadores).
+# Valor = área mínima del hueco, en fracción del recuadro, para dejarlo abierto.
+HOLES = {
+    'pelo-largo': 0.02, 'pelo-rizado': 0.02, 'pelo-corto': 0.02, 'pelo-largo-perfil': 0.02, 'pelo-corto-perfil': 0.02,
+    'gafas': 0.01, 'barba-bigote': 0.005, 'andador': 0.003, 'muletas': 0.002, 'silla-de-ruedas': 0.003,
+    'silla-motorizada': 0.01, 'planos': 1, 'baston': 0.002,
+}
+
 def to_d(path, ox=0, oy=0):
     d = []
     for curve in path:
@@ -31,6 +40,30 @@ def to_d(path, ox=0, oy=0):
                 d.append(f"C{seg.c1.x-ox:.1f},{seg.c1.y-oy:.1f} {seg.c2.x-ox:.1f},{seg.c2.y-oy:.1f} {seg.end_point.x-ox:.1f},{seg.end_point.y-oy:.1f}")
         d.append('Z')
     return ''.join(d)
+
+def open_holes(ink, outside, min_frac):
+    """Marca como 'exterior' los huecos blancos cerrados de área >= min_frac del recuadro."""
+    ys, xs = np.nonzero(~outside)
+    area_box = (xs.max() - xs.min() + 1) * (ys.max() - ys.min() + 1)
+    enclosed = ~ink & ~outside
+    img = Image.fromarray(np.where(enclosed, 255, 0).astype('uint8')).copy()
+    arr = np.array(img)
+    out = outside.copy()
+    label = 1
+    while True:
+        pts = np.argwhere(arr == 255)
+        if not len(pts):
+            break
+        y, x = pts[0]
+        ImageDraw.floodfill(img, (int(x), int(y)), label % 250 + 1)
+        arr = np.array(img)
+        comp = arr == (label % 250 + 1)
+        if comp.sum() >= min_frac * area_box:
+            out |= comp
+        arr[comp] = 0
+        img = Image.fromarray(arr).copy()
+        label += 1
+    return out
 
 def bitmap_trace(mask, **opts):
     # Ojo: potracer traza los píxeles en False
@@ -46,6 +79,9 @@ def trace(png):
     flood = Image.fromarray(np.pad(np.where(ink, 0, 255).astype('uint8'), 1, constant_values=255)).copy()
     ImageDraw.floodfill(flood, (0, 0), 128)
     outside = np.array(flood)[1:-1, 1:-1] == 128
+    name = os.path.splitext(os.path.basename(png))[0]
+    if name in HOLES:
+        outside = open_holes(ink, outside, HOLES[name])
     sil = ~outside
     # Tinta del perímetro = tinta pegada al exterior (dilatación del exterior)
     ys, xs = np.nonzero(sil)
@@ -62,11 +98,19 @@ def trace(png):
     # La silueta se traza por el CENTRO del contorno original: se erosiona la mitad del grosor
     sil_mid = np.array(Image.fromarray((sil * 255).astype('uint8')).filter(ImageFilter.MinFilter(max(1, int(stroke) | 1)))) > 0
     W, H = int(x1 - x0), int(y1 - y0)
+    if name in HOLES:
+        # Piezas con huecos o trazos finos: la silueta solo tapa (sin trazo) y
+        # toda la tinta original se dibuja como línea, sin erosionar nada.
+        svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">'
+               f'<path class="sil" fill="#fff" d="{to_d(bitmap_trace(sil, **opts), x0, y0)}"/>'
+               f'<path class="lin" fill="#111" d="{to_d(bitmap_trace(ink, **opts), x0, y0)}"/>'
+               f'</svg>')
+        return svg, W, H, stroke, 'ink'
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">'
            f'<path class="sil" fill="#fff" d="{to_d(bitmap_trace(sil_mid, **opts), x0, y0)}"/>'
            f'<path class="lin" fill="#111" d="{to_d(bitmap_trace(lin, **opts), x0, y0)}"/>'
            f'</svg>')
-    return svg, W, H, stroke
+    return svg, W, H, stroke, 'sil'
 
 def estimate_stroke(ink, outside):
     """Grosor medio (px) del contorno: recorre filas y columnas desde fuera hacia dentro."""
@@ -97,8 +141,8 @@ if __name__ == '__main__':
     manifest = json.load(open(man_path)) if os.path.exists(man_path) else {}
     for png in sorted(glob.glob(os.path.join(src, '*.png'))):
         name = os.path.splitext(os.path.basename(png))[0]
-        svg, W, H, stroke = trace(png)
+        svg, W, H, stroke, mode = trace(png)
         open(os.path.join(dst, name + '.svg'), 'w').write(svg)
-        manifest[name] = {'w': W, 'h': H, 'stroke': round(stroke, 1)}
+        manifest[name] = {'w': W, 'h': H, 'stroke': round(stroke, 1), 'mode': mode}
         print(f'{name}: {W}x{H}, contorno {stroke:.1f}px')
     json.dump(dict(sorted(manifest.items())), open(man_path, 'w'), indent=1)

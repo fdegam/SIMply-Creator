@@ -2,326 +2,391 @@
  "andador": {
   "w": 673,
   "h": 785,
-  "stroke": 10.0
+  "stroke": 10.0,
+  "mode": "ink"
  },
  "barba-bigote": {
   "w": 792,
   "h": 638,
-  "stroke": 16.0
+  "stroke": 16.0,
+  "mode": "ink"
  },
  "baston": {
   "w": 95,
   "h": 504,
-  "stroke": 4.0
+  "stroke": 4.0,
+  "mode": "ink"
  },
  "bata-medico": {
   "w": 530,
   "h": 800,
-  "stroke": 8.0
+  "stroke": 8.0,
+  "mode": "sil"
  },
  "bermudas": {
   "w": 600,
   "h": 584,
-  "stroke": 13.0
+  "stroke": 13.0,
+  "mode": "sil"
  },
  "boca-neutra": {
   "w": 724,
   "h": 209,
-  "stroke": 10.0
+  "stroke": 10.0,
+  "mode": "sil"
  },
  "boca-sonrisa": {
   "w": 870,
   "h": 393,
-  "stroke": 24.0
+  "stroke": 24.0,
+  "mode": "sil"
  },
  "botas": {
   "w": 978,
   "h": 717,
-  "stroke": 15.0
+  "stroke": 15.0,
+  "mode": "sil"
  },
  "brazo": {
   "w": 176,
   "h": 792,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "brazo-doblado": {
   "w": 525,
   "h": 478,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "brazo-lateral": {
   "w": 163,
   "h": 701,
-  "stroke": 6.0
+  "stroke": 6.0,
+  "mode": "sil"
  },
  "cabeza-frontal": {
   "w": 536,
   "h": 787,
-  "stroke": 12.0
+  "stroke": 12.0,
+  "mode": "sil"
  },
  "cabeza-mujer-frontal": {
   "w": 488,
   "h": 768,
-  "stroke": 15.0
+  "stroke": 15.0,
+  "mode": "sil"
  },
  "cabeza-nino-frontal": {
   "w": 598,
   "h": 714,
-  "stroke": 20.0
+  "stroke": 20.0,
+  "mode": "sil"
  },
  "cabeza-perfil": {
   "w": 581,
   "h": 759,
-  "stroke": 17.0
+  "stroke": 17.0,
+  "mode": "sil"
  },
  "cabeza-perfil-mujer": {
   "w": 585,
   "h": 797,
-  "stroke": 15.0
+  "stroke": 15.0,
+  "mode": "sil"
  },
  "cabeza-posterior-corto": {
   "w": 517,
   "h": 774,
-  "stroke": 10.0
+  "stroke": 10.0,
+  "mode": "sil"
  },
  "cabeza-posterior-largo": {
   "w": 584,
   "h": 730,
-  "stroke": 11.0
+  "stroke": 11.0,
+  "mode": "sil"
  },
  "cabeza-posterior-mono": {
   "w": 462,
   "h": 800,
-  "stroke": 13.0
+  "stroke": 13.0,
+  "mode": "sil"
  },
  "cabeza-posterior-rizado": {
   "w": 591,
   "h": 784,
-  "stroke": 12.0
+  "stroke": 12.0,
+  "mode": "sil"
  },
  "camisa-manga-larga": {
   "w": 600,
   "h": 752,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "casco-obra": {
   "w": 960,
   "h": 711,
-  "stroke": 23.0
+  "stroke": 23.0,
+  "mode": "sil"
  },
  "cejas": {
   "w": 974,
   "h": 173,
-  "stroke": 23.0
+  "stroke": 23.0,
+  "mode": "sil"
  },
  "chaleco-reflectante": {
   "w": 551,
   "h": 695,
-  "stroke": 14.0
+  "stroke": 14.0,
+  "mode": "sil"
  },
  "chaqueta": {
   "w": 599,
   "h": 686,
-  "stroke": 12.0
+  "stroke": 12.0,
+  "mode": "sil"
  },
  "chaqueta-chef": {
   "w": 594,
   "h": 721,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "delantal": {
   "w": 600,
   "h": 793,
-  "stroke": 11.0
+  "stroke": 11.0,
+  "mode": "sil"
  },
  "falda": {
   "w": 600,
   "h": 711,
-  "stroke": 11.0
+  "stroke": 11.0,
+  "mode": "sil"
  },
  "gafas": {
   "w": 963,
   "h": 400,
-  "stroke": 20.0
+  "stroke": 20.0,
+  "mode": "ink"
  },
  "gorra": {
   "w": 848,
   "h": 734,
-  "stroke": 19.0
+  "stroke": 19.0,
+  "mode": "sil"
  },
  "gorro-chef": {
   "w": 595,
   "h": 797,
-  "stroke": 13.0
+  "stroke": 13.0,
+  "mode": "sil"
  },
  "mano-derecha": {
   "w": 346,
   "h": 746,
-  "stroke": 13.0
+  "stroke": 13.0,
+  "mode": "sil"
  },
  "mochila": {
   "w": 589,
   "h": 773,
-  "stroke": 8.0
+  "stroke": 8.0,
+  "mode": "sil"
  },
  "muletas": {
   "w": 365,
   "h": 782,
-  "stroke": 6.0
+  "stroke": 6.0,
+  "mode": "ink"
  },
  "nariz": {
   "w": 512,
   "h": 699,
-  "stroke": 21.0
+  "stroke": 21.0,
+  "mode": "sil"
  },
  "ojos-cerrados": {
   "w": 900,
   "h": 154,
-  "stroke": 28.0
+  "stroke": 28.0,
+  "mode": "sil"
  },
  "ojos-par": {
   "w": 986,
   "h": 256,
-  "stroke": 19.0
+  "stroke": 19.0,
+  "mode": "sil"
  },
  "pala": {
   "w": 181,
   "h": 793,
-  "stroke": 7.0
+  "stroke": 7.0,
+  "mode": "sil"
  },
  "pantalon-cargo": {
   "w": 477,
   "h": 800,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "pelo-corto": {
   "w": 567,
   "h": 455,
-  "stroke": 13.0
+  "stroke": 13.0,
+  "mode": "ink"
  },
  "pelo-corto-perfil": {
   "w": 696,
   "h": 654,
-  "stroke": 15.0
+  "stroke": 15.0,
+  "mode": "ink"
  },
  "pelo-largo": {
   "w": 596,
   "h": 779,
-  "stroke": 10.0
+  "stroke": 10.0,
+  "mode": "ink"
  },
  "pelo-largo-perfil": {
   "w": 374,
   "h": 791,
-  "stroke": 8.0
+  "stroke": 8.0,
+  "mode": "ink"
  },
  "pelo-mono": {
   "w": 512,
   "h": 450,
-  "stroke": 19.0
+  "stroke": 19.0,
+  "mode": "sil"
  },
  "pelo-rizado": {
   "w": 600,
   "h": 504,
-  "stroke": 13.0
+  "stroke": 13.0,
+  "mode": "ink"
  },
  "pierna": {
   "w": 237,
   "h": 784,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "pierna-lateral": {
   "w": 197,
   "h": 797,
-  "stroke": 8.0
+  "stroke": 8.0,
+  "mode": "sil"
  },
  "pierna-sentada": {
   "w": 592,
   "h": 681,
-  "stroke": 10.0
+  "stroke": 10.0,
+  "mode": "sil"
  },
  "planos": {
   "w": 1001,
   "h": 271,
-  "stroke": 11.0
+  "stroke": 11.0,
+  "mode": "ink"
  },
  "planta-persona": {
   "w": 721,
   "h": 627,
-  "stroke": 14.0
+  "stroke": 14.0,
+  "mode": "sil"
  },
  "planta-silla-de-ruedas": {
   "w": 477,
   "h": 716,
-  "stroke": 8.0
+  "stroke": 8.0,
+  "mode": "sil"
  },
  "silla-de-ruedas": {
   "w": 909,
   "h": 761,
-  "stroke": 12.0
+  "stroke": 12.0,
+  "mode": "ink"
  },
  "silla-motorizada": {
   "w": 655,
   "h": 761,
-  "stroke": 10.0
+  "stroke": 10.0,
+  "mode": "ink"
  },
  "sombrero": {
   "w": 1007,
   "h": 498,
-  "stroke": 19.0
+  "stroke": 19.0,
+  "mode": "sil"
  },
  "tacones": {
   "w": 936,
   "h": 671,
-  "stroke": 15.0
+  "stroke": 15.0,
+  "mode": "sil"
  },
  "torso-hombre": {
   "w": 598,
   "h": 696,
-  "stroke": 10.0
+  "stroke": 10.0,
+  "mode": "sil"
  },
  "torso-hombre-lateral": {
   "w": 314,
   "h": 757,
-  "stroke": 10.0
+  "stroke": 10.0,
+  "mode": "sil"
  },
  "torso-hombre-posterior": {
   "w": 593,
   "h": 685,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "torso-mujer": {
   "w": 524,
   "h": 767,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "torso-mujer-lateral": {
   "w": 365,
   "h": 743,
-  "stroke": 11.0
+  "stroke": 11.0,
+  "mode": "sil"
  },
  "torso-mujer-manga-larga": {
   "w": 596,
   "h": 732,
-  "stroke": 8.0
+  "stroke": 8.0,
+  "mode": "sil"
  },
  "torso-mujer-posterior": {
   "w": 600,
   "h": 693,
-  "stroke": 8.0
+  "stroke": 8.0,
+  "mode": "sil"
  },
  "vaqueros": {
   "w": 346,
   "h": 795,
-  "stroke": 8.0
+  "stroke": 8.0,
+  "mode": "sil"
  },
  "vaqueros-posterior": {
   "w": 355,
   "h": 794,
-  "stroke": 9.0
+  "stroke": 9.0,
+  "mode": "sil"
  },
  "zapatillas": {
   "w": 990,
   "h": 575,
-  "stroke": 16.0
+  "stroke": 16.0,
+  "mode": "sil"
  }
 }
