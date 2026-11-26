@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SIMply Creator 3D</title>
+  <meta name="description" content="Generador 3D low-poly de personajes: complexión, rasgos, género y profesión. Exporta a DXF y SVG.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2l9 14-9 14-9-14z' fill='%2362d96b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+  { "imports": { "three": "./js/vendor/three.module.js", "three/addons/": "./js/vendor/addons/" } }
+  </script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-complexion" viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="3"/><path d="M8 22v-7.5a4 4 0 0 1 8 0V22M8.5 22h7"/></symbol>
+      <symbol id="i-gender" viewBox="0 0 24 24"><circle cx="9" cy="15" r="4.5"/><path d="M12.4 11.6L19 5m-5 0h5v5"/></symbol>
+      <symbol id="i-hair" viewBox="0 0 24 24"><path d="M5 14a7 7 0 0 1 14 0v4h-3.5v-5c-3.5 0-6.5-1.5-7.5-4.5C7 11 6 12.5 5 14z"/></symbol>
+      <symbol id="i-eyes" viewBox="0 0 24 24"><path d="M2 12s4-6.5 10-6.5S22 12 22 12s-4 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-nose" viewBox="0 0 24 24"><path d="M12 3v11.5c-3 0-4.5 1.5-4.5 3.5h9c0-2-1.5-3.5-4.5-3.5"/></symbol>
+      <symbol id="i-facial" viewBox="0 0 24 24"><circle cx="7" cy="14" r="3.6"/><circle cx="17" cy="14" r="3.6"/><path d="M10.6 14h2.8M3.6 13.5L5 7m15.4 6.5L19 7"/></symbol>
+      <symbol id="i-profession" viewBox="0 0 24 24"><path d="M4 16.5a8 8 0 0 1 16 0z"/><path d="M2 19h20M12 5.5v5"/></symbol>
+      <symbol id="i-mobility" viewBox="0 0 24 24"><circle cx="10" cy="4.5" r="1.8"/><path d="M10 7.5v6h5l3 6M10 10.5h4.5"/><path d="M7.5 12.5a5.5 5.5 0 1 0 7.5 7.5"/></symbol>
+      <symbol id="i-dice" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="9" cy="9" r="1.1" fill="currentColor"/><circle cx="15" cy="15" r="1.1" fill="currentColor"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/><circle cx="15" cy="9" r="1.1" fill="currentColor"/><circle cx="9" cy="15" r="1.1" fill="currentColor"/></symbol>
+      <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7L4 12l5 5M4.5 12H15a5 5 0 0 1 0 10h-3" transform="translate(0 -3)"/></symbol>
+      <symbol id="i-redo" viewBox="0 0 24 24"><path d="M15 7l5 5-5 5M19.5 12H9a5 5 0 0 0 0 10h3" transform="translate(0 -3)"/></symbol>
+      <symbol id="i-spin" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 4v4.5h-4.5"/></symbol>
+      <symbol id="i-weight" viewBox="0 0 24 24"><path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/></symbol>
+      <symbol id="i-height" viewBox="0 0 24 24"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 64 48"><path d="M44 36C32 40 18 34 12 22" /><path d="M6 14l5 11 11-5z" fill="currentColor"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="sim">
+    <!-- ================= Escenario ================= -->
+    <main class="stage">
+      <div id="viewport" class="viewport" role="img" aria-label="Personaje 3D. Arrastra para girar, rueda para acercar."></div>
+
+      <header class="name-pill">
+        <span class="plumb" aria-hidden="true"></span>
+        <input id="name" type="text" value="Mi personaje" maxlength="28" aria-label="Nombre del personaje" spellcheck="false">
+      </header>
+
+      <div id="hexes" class="hexes" role="group" aria-label="Colores"></div>
+
+      <div class="sliders" role="group" aria-label="Cuerpo">
+        <label class="slider"><svg class="ic"><use href="#i-weight"/></svg>
+          <input id="s-weight" type="range" min="-1" max="1" step="0.01" value="0" orient="vertical" aria-label="Peso">
+        </label>
+        <label class="slider"><svg class="ic"><use href="#i-height"/></svg>
+          <input id="s-stature" type="range" min="-1" max="1" step="0.01" value="0" orient="vertical" aria-label="Estatura">
+        </label>
+      </div>
+
+      <div class="top-actions">
+        <button id="btn-dxf" class="pill" title="Exportar DXF (CAD, 3DFACE, mm)">DXF</button>
+        <button id="btn-svg" class="pill" title="Exportar SVG (vector, vista actual)">SVG</button>
+      </div>
+
+      <div class="rot">
+        <button id="rot-l" class="arrow" aria-label="Girar a la izquierda"><svg viewBox="0 0 64 48"><use href="#i-arrow"/></svg></button>
+        <button id="rot-r" class="arrow flip" aria-label="Girar a la derecha"><svg viewBox="0 0 64 48"><use href="#i-arrow"/></svg></button>
+      </div>
+
+      <div class="bar" role="toolbar" aria-label="Acciones">
+        <button id="btn-random" class="round sm" title="Aleatorizar"><svg class="ic"><use href="#i-dice"/></svg></button>
+        <button id="btn-undo" class="round sm" title="Deshacer" disabled><svg class="ic"><use href="#i-undo"/></svg></button>
+        <button id="btn-redo" class="round sm" title="Rehacer" disabled><svg class="ic"><use href="#i-redo"/></svg></button>
+        <button id="btn-spin" class="round sm" aria-pressed="false" title="Giro automático"><svg class="ic"><use href="#i-spin"/></svg></button>
+      </div>
+
+      <button id="btn-reset" class="round cancel" title="Resetear"><svg class="ic"><use href="#i-close"/></svg></button>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <!-- ================= Categorías + panel ================= -->
+    <aside class="side">
+      <nav id="arc" class="arc" aria-label="Categorías"></nav>
+      <section class="panel" aria-live="polite">
+        <h2 id="panel-title">Complexión</h2>
+        <div id="grid" class="grid" role="listbox"></div>
+      </section>
+    </aside>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

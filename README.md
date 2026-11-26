@@ -1,92 +1,101 @@
 # SIMply Creator
 
-Generador 3D **low-poly** de personajes en el navegador (Three.js, sin build ni dependencias de npm).
-Elige complexión, género, rasgos y profesión; personaliza los colores; gira el modelo en 3D y
-**exporta a DXF (CAD) y SVG (vector)**.
+Generador de **figuras humanas de línea para arquitectura** (el "SIM"), con interfaz de creador de
+personajes. Personalizas cuerpo, cara, ropa, profesión y movilidad reducida, eliges el estilo de línea
+como en Plantimania y exportas el SIM como **bloque de AutoCAD** o como **SVG**.
 
 ![Vista previa](assets/preview.png)
 
 ## Uso
 
-Los módulos ES necesitan un servidor HTTP (no funcionan abriendo el archivo con `file://`):
+Necesita un servidor HTTP (no funciona abriendo el archivo con `file://`):
 
 ```bash
 python3 -m http.server 8000
-# abre http://localhost:8000
 ```
 
-Funciona tal cual en **GitHub Pages** (Settings → Pages → *Deploy from a branch* → `main` / root).
-Three.js está incluido en `js/vendor/`, así que no hay dependencia de CDN.
+Abre `http://localhost:8000`. En GitHub Pages funciona tal cual (Settings → Pages → *Deploy from a branch* → `main` / root).
 
-## Interfaz
+## Qué se puede hacer
 
-Inspirada en los creadores de personajes de simulación de vida (diseño propio, sin recursos de terceros):
-
-| Zona | Qué hace |
+| Zona | Función |
 |---|---|
-| Arco de botones redondos (derecha) | Elige categoría: Complexión · Género · Peinado · Ojos · Nariz · Rasgo facial · Profesión |
-| Panel de tarjetas | Cada opción con su miniatura 3D renderizada con tu personaje y tus colores |
-| Hexágonos de color (arriba izq.) | Piel, pelo, ojos, ropa, acento y pantalón (cambio en vivo) |
-| Sliders verticales (izq.) | Peso y estatura continuos (doble clic para centrar) |
-| Flechas curvas | Giran el personaje al mantenerlas pulsadas (también se puede arrastrar y usar la rueda) |
-| Barra inferior | 🎲 aleatorizar · deshacer · rehacer (`Ctrl+Z`) · giro automático |
-| ✕ | Resetear |
-| DXF / SVG (arriba dcha.) | Exportan el personaje; el nombre del archivo sale del nombre que escribas arriba a la izquierda |
+| Vistas (izquierda) | Frontal · Posterior · Lateral · Planta |
+| Sliders verticales | Complexión y estatura (doble clic para centrar) |
+| Arco de categorías | Cuerpo · Peinado · Cara · Ropa · Profesión · Accesorio · Movilidad · Estilo de línea |
+| Cara | Tamaño de ojos, boca y nariz **con regla de proporción** (ver abajo) |
+| Movilidad | Sin ayuda · Silla de ruedas · Silla motorizada · Muletas · Bastón · Andador |
+| Estilo de línea | Grosor de perímetro y de líneas interiores (mm de papel), sombreado interior (ninguno / tono / rayado), sombra proyectada, escala 1:20 · 1:50 · 1:100 |
+| Barra inferior | Aleatorizar · deshacer · rehacer (`Ctrl+Z`) · ✕ resetear |
+| Bloque DXF / SVG | Exportación |
 
-Opciones: 5 complexiones, 3 géneros, 7 peinados, 4 ojos, 4 narices, 6 rasgos faciales y 7 profesiones
-(Casual, Arquitecto, Chef, Médico, Bombero, Artista, Astronauta; al elegir una se aplican sus colores por defecto).
-Al cambiar complexión o género las proporciones se **morfan** de forma animada; el resto de piezas entra con un pop elástico.
+### Regla de proporción
 
-## Estructura
+Los rasgos se miden respecto a la cabeza (`js/vector/proportions.js`). Si pides una boca o unos ojos
+que no caben en la cara, **la cabeza entera crece** (hasta ×1,2) y el resto de rasgos se reajusta (por
+ejemplo, una boca grande separa un poco los ojos). Si aun así no cabe, se limita y la interfaz lo avisa.
+Las mismas reglas valen para ojos, nariz y boca, y las piezas de pelo, sombreros y barba se colocan
+en función del cráneo ya escalado.
+
+### El SIM es un bloque de AutoCAD
+
+`Bloque DXF` genera un DXF R12 (abre en AutoCAD, BricsCAD, LibreCAD, DraftSight…) con:
+
+- una definición `BLOCK` llamada `SIM_<NOMBRE>_<VISTA>` con punto base entre los pies, a nivel de suelo;
+- una inserción `INSERT` en el modelo con **atributos** editables: `NOMBRE`, `GENERO`, `PROFESION`, `MOVILIDAD`, `VISTA`;
+- capas `SIM-PERIMETRO` (polilíneas con grosor real = grosor de papel × escala), `SIM-INTERIOR`, `SIM-SOMBRA`;
+- unidades en mm a tamaño real (una figura de pie mide unos 1.750 mm);
+- **eliminación de líneas ocultas**: lo que queda detrás de otra pieza no se dibuja, igual que en la vista previa.
+
+Verificado con `ezdxf` (lectura y auditoría sin errores, bloque, inserción y atributos presentes).
+
+## Cómo está hecho
+
+Las figuras se montan con un **kit de 65 piezas de línea** (cabezas, peinados, rasgos, torsos, prendas,
+calzado, accesorios de profesión, ayudas de movilidad, símbolos en planta).
+
+1. Cada pieza se generó como dibujo de línea aislado (IA, Magnific) y se **vectorizó en local con potrace**
+   (`tools/vectorize.py`). Los PNG originales están en `assets/parts-src/` para poder re-vectorizar sin coste.
+2. Cada SVG separa la **silueta** (se rellena de blanco para tapar lo que hay detrás y recibe el trazo de
+   perímetro con el grosor elegido) de las **líneas interiores**. Así el perímetro y el interior se ajustan por separado.
+3. `js/vector/figure.js` coloca las piezas según la vista, el género, la complexión, la estatura, la ropa,
+   la profesión y la movilidad (incluida la pose sentada en silla).
 
 ```
-index.html            estructura: visor 3D, controles, botones
-css/style.css
-js/
-  main.js             escena, interfaz y eventos
-  character.js        ensambla las piezas según el estado y anima las transiciones
-  thumbs.js           miniaturas de las opciones (renderer fuera de pantalla)
-  common.js           helpers low-poly + layout del cuerpo (articulaciones) + prendas base
-  materials.js        materiales compartidos, colores y paletas
-  complexion.js       categoría: cuerpo base según proporciones
-  gender.js           categoría: modificadores y rasgos asociados
-  traits.js           categoría: peinado, ojos, nariz, rasgo facial
-  profession.js       categoría: vestuario y accesorios
-  export/
-    dxf.js            exportador DXF
-    svg.js            exportador SVG
-    geometry.js       extracción de triángulos en coordenadas de mundo + descarga
-  vendor/             three.module.js (r160) + OrbitControls
+index.html            interfaz 2D (la actual)
+index-3d.html         primera versión 3D low-poly (se conserva como referencia)
+css/style.css, css/app2d.css
+js/app2d.js           interfaz, estado, historial, exportaciones
+js/vector/
+  kit.js              carga de piezas y aplanado de trazados
+  figure.js           montaje de la figura por vista + opciones
+  proportions.js      reglas de proporción de la cara
+  render.js           SVG con perímetro, interior, sombreado y sombra
+  dxf.js              bloque DXF con atributos y líneas ocultas eliminadas
+tools/vectorize.py    PNG -> SVG (silueta + líneas) y manifest.json
+assets/parts/         piezas vectoriales + manifest.json
+assets/parts-src/     PNG fuente de cada pieza
+docs/borradores/      borradores de estilo, interfaz y anatomía del bloque
 ```
 
-Cada módulo de categoría exporta `options` (un objeto 3D por opción: `build(L) → THREE.Group`)
-y `category` (metadatos que `main.js` usa para generar la interfaz automáticamente). Para añadir
-una opción basta con añadir una entrada en el módulo correspondiente.
+Para regenerar las piezas tras cambiar el vectorizado:
 
-## Exportación
+```bash
+pip install potracer numpy pillow
+python3 tools/vectorize.py
+```
 
-* **DXF** — ASCII R12 (`AC1009`), unidades en **mm**, Z hacia arriba, vista frontal hacia +Y.
-  Cada triángulo es una entidad `3DFACE`; hay una capa por material (`PIEL`, `PELO`, `ROPA`,
-  `PANTALON`, `ACENTO`, `CALZADO`…) y color ACI por cara. Verificado con `ezdxf` (lectura + auditoría sin errores).
-* **SVG** — vista actual de la cámara: proyección, descarte de caras traseras, orden del pintor y
-  sombreado plano. Recortado al dibujo, fondo transparente.
+## Limitaciones conocidas
 
-> **Nota sobre librerías.** `three-dxf` es un *visor* de DXF (lee, no escribe) y `three-svg-renderer`
-> exige bundler y dependencias pesadas (`three-mesh-bvh`…) que rompen el enfoque sin build. Por eso los
-> exportadores son propios (≈100 líneas cada uno, sin dependencias). El SVG usa el algoritmo del
-> pintor, así que en intersecciones muy complejas puede haber alguna astilla; el DXF no tiene ese problema.
+- **Catálogo de piezas finito**: 2 cabezas frontales, 2 de perfil y 4 posteriores; las combinaciones son libres,
+  pero no hay, por ejemplo, zapatos frontales dibujados (se usa un volumen simple) ni silla de ruedas frontal
+  (al elegirla en frontal o posterior se muestra la lateral, con aviso).
+- **Las piezas generadas no comparten exactamente el mismo trazo**, así que algunas uniones (cuello con cuello de
+  camisa, mangas con brazos) son mejorables a mano.
+- **Bloque DXF**: las líneas interiores llevan el contorno del trazo (dos bordes muy juntos). A escala de ploteo
+  se ven como una línea, pero con mucho zoom se aprecian dobles. El sombreado interior solo se aplica al SVG.
 
 ## Integración en el portfolio
 
-`portfolio/card.html` contiene una tarjeta lista para pegar en el índice del portfolio.
-Si el portfolio es otro repositorio, copia el fragmento y cambia el `href` por la URL publicada
-(p. ej. `https://<usuario>.github.io/SIMply-Creator/`). También se puede incrustar con un `<iframe>`:
-
-```html
-<iframe src="https://<usuario>.github.io/SIMply-Creator/" title="SIMply Creator"
-        style="width:100%;height:720px;border:0" loading="lazy" allow="fullscreen"></iframe>
-```
-
-## Licencia
-
-Código del proyecto: libre uso. Three.js: MIT (`js/vendor/LICENSE-three`).
+`portfolio/card.html` contiene una tarjeta lista para el índice del portfolio (sustituye `URL_PUBLICADA` por la
+dirección de GitHub Pages).
