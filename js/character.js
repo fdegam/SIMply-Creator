@@ -6,6 +6,7 @@ import { options as complexion } from './complexion.js';
 import { options as gender } from './gender.js';
 import { options as traits } from './traits.js';
 import { options as profession } from './profession.js';
+import { options as mobility } from './mobility.js';
 import { layout, resolveProfile, lerpProfile } from './common.js';
 
 /** Dónde buscar el objeto de cada ranura. */
@@ -17,8 +18,9 @@ const SLOTS = {
   nose:       (s) => traits.nose[s.nose],
   facial:     (s) => traits.facial[s.facial],
   profession: (s) => profession[s.profession],
+  mobility:   (s) => mobility[s.mobility || 'ninguna'],
 };
-const SLOT_KEY = { body: 'complexion', gender: 'gender', hair: 'hair', eyes: 'eyes', nose: 'nose', facial: 'facial', profession: 'profession' };
+const SLOT_KEY = { body: 'complexion', gender: 'gender', hair: 'hair', eyes: 'eyes', nose: 'nose', facial: 'facial', profession: 'profession', mobility: 'mobility' };
 
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const easeOutBack = (t) => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
@@ -74,7 +76,7 @@ export class Character {
   }
 
   _rebuildAll() {
-    this.L = layout(this.profile);
+    this.L = layout(this.profile, this.pose);
     for (const name of Object.keys(SLOTS)) this._buildSlot(name);
   }
 
@@ -84,6 +86,7 @@ export class Character {
     const prev = this.state;
     this.state = { ...state };
     const target = targetProfile(this.state);
+    this.pose = mobility[this.state.mobility || 'ninguna'].pose;
 
     if (first || !animate) {
       this.anim = null;
@@ -92,6 +95,14 @@ export class Character {
       return;
     }
 
+    if ((prev.mobility || 'ninguna') !== (state.mobility || 'ninguna')) {
+      // Cambio de pose (de pie / sentado / muletas): reconstrucción completa y pop
+      this.anim = null; this.pops = [];
+      this.profile = target;
+      this._rebuildAll();
+      this._startPop(this.root, 0.9);
+      return;
+    }
     const bodyChanged = prev.complexion !== state.complexion || prev.gender !== state.gender;
     if (bodyChanged) {
       // Morfado de proporciones: se reconstruye en cada frame con el perfil interpolado.
@@ -100,7 +111,7 @@ export class Character {
       return;
     }
     // Solo cambian piezas sueltas: se reconstruyen y "saltan" con un pop elástico.
-    this.L = layout(this.profile);
+    this.L = layout(this.profile, this.pose);
     for (const name of Object.keys(SLOTS)) {
       if (name === 'body') continue;
       if (prev[SLOT_KEY[name]] !== this.state[SLOT_KEY[name]]) {

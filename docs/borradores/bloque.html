@@ -1,0 +1,31 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Borrador bloque</title>
+<style>
+*{box-sizing:border-box}body{margin:0;width:1280px;height:760px;font:14px/1.4 "Segoe UI",system-ui,sans-serif;color:#17324d;background:#fff;display:grid;grid-template-columns:420px 1fr;position:relative}
+.draw{background:#f4f7fa;border-right:1px solid #d6dee6;position:relative}
+.draw img{position:absolute;left:30px;top:70px;width:360px;height:auto}
+.dim{position:absolute;border:0;color:#c0392b;font-size:12px;font-weight:700}
+.ip{position:absolute;left:206px;top:655px;width:20px;height:20px;border:2px solid #c0392b;border-radius:50%;}
+.ip:before,.ip:after{content:"";position:absolute;background:#c0392b}.ip:before{left:-8px;right:-8px;top:8px;height:2px}.ip:after{top:-8px;bottom:-8px;left:8px;width:2px}
+.lab{position:absolute;color:#c0392b;font-size:12px;font-weight:700}
+.right{padding:22px 30px;overflow:hidden}
+h1{margin:0 0 4px;font-size:22px}p.s{margin:0 0 16px;color:#5d7a93}
+table{border-collapse:collapse;width:100%;font-size:13px;margin-bottom:16px}th,td{border:1px solid #d6dee6;padding:6px 10px;text-align:left}th{background:#eef3f8;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.sw{display:inline-block;width:46px;vertical-align:middle;border-top:0 solid #000}
+code{background:#eef3f8;padding:1px 6px;border-radius:5px;font-size:12.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}.box{border:1px solid #d6dee6;border-radius:10px;padding:10px 14px}.box h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:#3b6a9a}.box li{margin:3px 0}ul{margin:0;padding-left:18px}
+.tag{position:absolute;right:12px;top:12px;background:#ffe08a;color:#6b4b00;padding:4px 10px;border-radius:10px;font-size:12px;font-weight:700}
+</style></head><body>
+<div class="draw"><img src="img/figura.png" alt="">
+ <div class="ip"></div><div class="lab" style="left:236px;top:660px">Punto de inserción (0,0)<br>entre los pies, a nivel de suelo</div>
+ <div class="dim" style="left:30px;top:20px">↑ 1 750 mm · 1 unidad = 1 mm</div></div>
+<div class="right"><h1>Anatomía del bloque</h1><p class="s">Un <code>BLOCK</code> real en DXF/DWG: se inserta con <code>INSERT</code>, se escala, se copia y se puede refinar con <code>BEDIT</code>.</p>
+<table><tr><th>Capa</th><th>Contenido</th><th>Grosor</th><th>Color</th></tr>
+<tr><td><code>SIM-PERIMETRO</code></td><td>Silueta exterior (polilínea cerrada)</td><td>0,50 mm</td><td>7 (negro/blanco)</td></tr>
+<tr><td><code>SIM-INTERIOR</code></td><td>Pliegues, prendas, rasgos</td><td>0,13 mm</td><td>7</td></tr>
+<tr><td><code>SIM-SOMBREADO</code></td><td>Rayado o tono (HATCH / SOLID)</td><td>0,09 mm</td><td>8 (gris)</td></tr>
+<tr><td><code>SIM-SOMBRA</code></td><td>Sombra proyectada en el suelo</td><td>0,05 mm</td><td>9 (gris claro)</td></tr>
+<tr><td><code>SIM-AYUDA</code></td><td>Silla de ruedas / muletas / silla motorizada</td><td>0,25 mm</td><td>7</td></tr></table>
+<div class="two">
+<div class="box"><h3>Atributos (ATTDEF)</h3><ul><li><code>NOMBRE</code> · Mi personaje</li><li><code>GENERO</code> · F / M / N</li><li><code>PROFESION</code> · Arquitecto</li><li><code>MOVILIDAD</code> · Silla de ruedas</li><li><code>VISTA</code> · Frontal</li></ul></div>
+<div class="box"><h3>Variantes</h3><ul><li>Una definición por vista: <code>SIM_..._FRONTAL</code>, <code>_POSTERIOR</code>, <code>_LATERAL</code>, <code>_PLANTA</code></li><li>Todas en un único archivo, listas para <code>INSERT</code></li><li>Grosor, sombreado y sombra se fijan al exportar; los grosores también se pueden cambiar después desde las capas</li></ul></div></div>
+</div><div class="tag">BORRADOR</div></body></html>

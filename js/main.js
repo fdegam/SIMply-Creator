@@ -6,6 +6,7 @@ import { category as complexionCat } from './complexion.js';
 import { category as traitsCat } from './traits.js';
 import { category as genderCat } from './gender.js';
 import { category as professionCat, options as professions } from './profession.js';
+import { category as mobilityCat } from './mobility.js';
 import { colors, setColor, resetColors, COLOR_LABELS, PALETTES } from './materials.js';
 import { Character } from './character.js';
 import { renderGroupThumbs } from './thumbs.js';
@@ -13,14 +14,14 @@ import { exportDXF } from './export/dxf.js';
 import { exportSVG } from './export/svg.js';
 import { download } from './export/geometry.js';
 
-const CATEGORIES = [complexionCat, genderCat, traitsCat, professionCat];
+const CATEGORIES = [complexionCat, genderCat, traitsCat, professionCat, mobilityCat];
 const GROUPS = CATEGORIES.flatMap((c) => c.groups); // un botón del arco por grupo
-const GROUP_ICON = { complexion: 'complexion', gender: 'gender', hair: 'hair', eyes: 'eyes', nose: 'nose', facial: 'facial', profession: 'profession' };
+const GROUP_ICON = { complexion: 'complexion', gender: 'gender', hair: 'hair', eyes: 'eyes', nose: 'nose', facial: 'facial', profession: 'profession', mobility: 'mobility' };
 
 const DEFAULT_STATE = {
   complexion: 'normal', gender: 'neutro',
   hair: 'corto', eyes: 'normales', nose: 'recta', facial: 'ninguno',
-  profession: 'ninguna',
+  profession: 'ninguna', mobility: 'ninguna',
   weight: 0, stature: 0,
 };
 const state = { ...DEFAULT_STATE };
@@ -242,6 +243,7 @@ const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 function randomize() {
   for (const grp of GROUPS) state[grp.id] = pick(grp.options).id;
+  if (Math.random() < 0.75) state.mobility = 'ninguna'; // la movilidad reducida es la excepción
   state.weight = +(Math.random() * 1.2 - 0.6).toFixed(2);
   state.stature = +(Math.random() * 1.2 - 0.6).toFixed(2);
   for (const k of Object.keys(PALETTES)) setColor(k, pick(PALETTES[k]));

@@ -13,7 +13,7 @@ const FRAMES = {
   head:  { pos: [0.4, 1.7, 1.15], tgt: [0, 1.64, 0] },
   close: { pos: [0.28, 1.68, 0.78], tgt: [0, 1.64, 0] },
 };
-const FRAME_OF = { complexion: 'body', gender: 'body', profession: 'body', hair: 'head', facial: 'head', eyes: 'close', nose: 'close' };
+const FRAME_OF = { complexion: 'body', gender: 'body', profession: 'body', mobility: 'body', hair: 'head', facial: 'head', eyes: 'close', nose: 'close' };
 
 function init() {
   if (renderer) return;

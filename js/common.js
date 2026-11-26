@@ -84,7 +84,7 @@ export function resolveProfile(complexionProfile, genderMods = {}) {
  * Posiciones clave del cuerpo en metros. +Y arriba, +Z frente, personaje centrado en X.
  * Todas las categorías (cabeza, ropa, accesorios) se anclan a este layout.
  */
-export function layout(profile) {
+export function layout(profile, pose = 'stand') {
   const s = profile.height;
   const shoulderW = 0.185 * profile.shoulder;
   const waistW = 0.125 * profile.waist;
@@ -92,35 +92,48 @@ export function layout(profile) {
   const depth = 0.62 * profile.depth;
   const limb = profile.limb;
   const waistD = waistW * depth * (1 + 0.4 * profile.belly); // la barriga profundiza la cintura
+  const sit = pose === 'sit';
+  const drop = sit ? 0.32 * s : 0; // sentado: todo el tronco baja hasta la altura del asiento
 
   const L = {
-    s, profile, limb,
+    s, profile, limb, pose,
     shoulderW, waistW, hipW, depth, waistD,
     ankleY: 0.08 * s,
     kneeY: 0.46 * s,
-    crotchY: 0.82 * s,
-    waistY: 1.06 * s,
-    chestY: 1.43 * s,
-    neckTopY: 1.5 * s,
-    head: { r: 0.105 * s * profile.head, c: v3(0, 1.5 * s + 0.095 * s * profile.head, 0) },
+    crotchY: 0.82 * s - drop,
+    waistY: 1.06 * s - drop,
+    chestY: 1.43 * s - drop,
+    neckTopY: 1.5 * s - drop,
+    head: { r: 0.105 * s * profile.head, c: v3(0, 1.5 * s - drop + 0.095 * s * profile.head, 0) },
     sides: {},
   };
   L.head.rx = L.head.r * 0.88; L.head.ry = L.head.r * 1.05; L.head.rz = L.head.r * 0.95;
   L.topY = L.head.c.y + L.head.ry;
+  const up = 0.28 * s, fo = 0.25 * s;
 
   for (const side of [-1, 1]) {
-    // Brazo en A suave
     const shoulder = v3(side * (shoulderW + 0.012), L.chestY - 0.05 * s, 0);
-    const a1 = THREE.MathUtils.degToRad(9), a2 = THREE.MathUtils.degToRad(5);
-    const up = 0.28 * s, fo = 0.25 * s;
-    const elbow = shoulder.clone().add(v3(side * Math.sin(a1) * up, -Math.cos(a1) * up, 0));
-    const wrist = elbow.clone().add(v3(side * Math.sin(a2) * fo, -Math.cos(a2) * fo, 0.015 * s));
-    const hand = wrist.clone().add(v3(side * 0.004, -0.06 * s, 0.01));
+    let elbow, wrist, hand;
+    if (pose === 'stand') {
+      // Brazo en A suave
+      const a1 = THREE.MathUtils.degToRad(9), a2 = THREE.MathUtils.degToRad(5);
+      elbow = shoulder.clone().add(v3(side * Math.sin(a1) * up, -Math.cos(a1) * up, 0));
+      wrist = elbow.clone().add(v3(side * Math.sin(a2) * fo, -Math.cos(a2) * fo, 0.015 * s));
+      hand = wrist.clone().add(v3(side * 0.004, -0.06 * s, 0.01));
+    } else {
+      // Antebrazos hacia delante (manos sobre los aros / agarrando las muletas)
+      const d1 = sit ? v3(side * 0.14, -0.95, 0.1) : v3(side * 0.12, -0.97, 0.12);
+      const d2 = sit ? v3(side * 0.05, -0.28, 0.96) : v3(side * 0.04, -0.82, 0.57);
+      elbow = shoulder.clone().add(d1.normalize().multiplyScalar(up));
+      wrist = elbow.clone().add(d2.normalize().multiplyScalar(fo));
+      hand = wrist.clone().add(v3(0, sit ? -0.02 : -0.05, sit ? 0.05 : 0.03).multiplyScalar(s));
+    }
     const hip = v3(side * hipW * 0.5, L.crotchY + 0.06 * s, 0);
-    const knee = v3(side * hipW * 0.46, L.kneeY, 0.008);
-    const ankle = v3(side * hipW * 0.42, L.ankleY, 0);
+    const knee = sit ? v3(side * hipW * 0.46, hip.y - 0.03 * s, 0.42 * s) : v3(side * hipW * 0.46, L.kneeY, 0.008);
+    const ankle = sit ? v3(side * hipW * 0.42, 0.16 * s, knee.z + 0.07 * s) : v3(side * hipW * 0.42, L.ankleY, 0);
     L.sides[side] = { shoulder, elbow, wrist, hand, hip, knee, ankle };
   }
+  if (sit) L.kneeY = L.sides[1].knee.y;
   L.armR = [0.043 * limb, 0.035 * limb, 0.028 * limb]; // hombro, codo, muñeca
   L.legR = [0.078 * limb, 0.052 * limb, 0.036 * limb]; // cadera, rodilla, tobillo
   return L;
@@ -212,9 +225,10 @@ export function shoes(L, mat = mats.shoes) {
   for (const side of [-1, 1]) {
     const S = L.sides[side];
     const w = 0.085 * L.limb, len = 0.23 * L.s, h = 0.075 * L.s;
-    const m = box(w, h, len, v3(S.ankle.x, h / 2, 0.045 * L.s), mat, 'zapato');
+    const gy = S.ankle.y - 0.08 * L.s; // suela
+    const m = box(w, h, len, v3(S.ankle.x, gy + h / 2, S.ankle.z + 0.045 * L.s), mat, 'zapato');
     g.add(m);
-    g.add(box(w * 0.92, h * 0.55, len * 0.45, v3(S.ankle.x, h * 0.7, 0.1 * L.s), mat, 'puntera'));
+    g.add(box(w * 0.92, h * 0.55, len * 0.45, v3(S.ankle.x, gy + h * 0.7, S.ankle.z + 0.1 * L.s), mat, 'puntera'));
   }
   return g;
 }
